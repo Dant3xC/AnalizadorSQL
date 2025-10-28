@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------
-# PROGRAMA PRINCIPAL: ANALIZADOR SQL
-# ------------------------------------------------------------
-# Lee un archivo .sql, realiza el análisis léxico y sintáctico
-# e imprime el árbol de sintaxis abstracta (AST).
-# ------------------------------------------------------------
-
+# PROGRAMA PRINCIPAL: analiza archivo .sql
 import sys
 from sql_lexer import lexer
 from sql_parser import parser
@@ -16,12 +10,32 @@ def analizar_archivo(ruta_archivo):
             data = archivo.read()
             print(f"\n--- Iniciando análisis de: {ruta_archivo} ---\n")
 
+            # --- RESET del lexer antes de usarlo ---
+            lexer.lineno = 1
+            lexer.lex_errors = []
+            lexer.lex_error = False
+
+            # --- PRE-ESCANEO LÉXICO: detecta errores léxicos ANTES de parsear ---
+            lexer.input(data)
+            for _ in lexer:
+                # iterar consume tokens y ejecuta t_error si corresponde
+                pass
+
+            if getattr(lexer, 'lex_error', False):
+                print("Se detectaron errores léxicos. No se ejecutará el análisis sintáctico.")
+                for e in lexer.lex_errors:
+                    print(e)
+                print("\n--- Análisis finalizado (con errores léxicos) ---\n")
+                return
+
+            # --- Si no hay errores léxicos, ejecutar el parser ---
             resultado_ast = parser.parse(data, lexer=lexer)
-            
+
             if resultado_ast:
                 print("\n--- Árbol Sintáctico Abstracto (AST) ---")
                 for sentencia in resultado_ast:
                     print(sentencia)
+
             print("\n--- Análisis Finalizado ---\n")
 
     except FileNotFoundError:
@@ -34,4 +48,3 @@ if __name__ == "__main__":
         analizar_archivo(sys.argv[1])
     else:
         print("Uso: python analizador.py <archivo.sql>")
-        print("Ejemplo: python analizador.py casos_prueba/prueba1.sql")

@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------
-# ANALIZADOR LÉXICO SQL
-# ------------------------------------------------------------
-# Define los tokens, palabras reservadas y reglas para
-# construir el analizador léxico con PLY.
-# ------------------------------------------------------------
-
+# ANALIZADOR LÉXICO SQL (con registro de errores)
 import ply.lex as lex
 
 # --- Palabras reservadas ---
@@ -33,7 +27,7 @@ tokens = [
     'LPAREN', 'RPAREN', 'COMMA', 'SEMI'
 ] + list(reserved.values())
 
-# --- Expresiones regulares para tokens simples ---
+# --- RegEx simples ---
 t_PLUS   = r'\+'
 t_MINUS  = r'-'
 t_TIMES  = r'\*'
@@ -50,7 +44,6 @@ t_COMMA  = r','
 t_SEMI   = r';'
 t_ignore = ' \t'
 
-# --- Reglas de tokens con acciones ---
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = reserved.get(t.value.lower(), 'ID')
@@ -66,27 +59,41 @@ def t_STRING(t):
 
 def t_COMMENT(t):
     r'/\*([^*]|\*+[^*/])*\*+/'
-    pass  # Ignorar comentarios
+    pass  # ignora comentarios
 
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print(f"Error léxico en línea {t.lineno}: carácter inesperado '{t.value[0]}'")
+    """
+    Registra el error léxico en lexer.lex_errors y marca lexer.lex_error = True.
+    Luego avanza 1 carácter para continuar el escaneo (comportamiento tolerante),
+    pero ahora el flujo que llama al lexer puede decidir no parsear si hay errores.
+    """
+    # inicializar si es la primera vez
+    if not hasattr(t.lexer, 'lex_errors'):
+        t.lexer.lex_errors = []
+    t.lexer.lex_error = True
+    mensaje = f"Error léxico en línea {t.lineno}: carácter inesperado '{t.value[0]}'"
+    t.lexer.lex_errors.append(mensaje)
+    # saltar 1 carácter para continuar el lexing
     t.lexer.skip(1)
 
-# --- Construcción del analizador léxico ---
+# Construcción del lexer
 lexer = lex.lex()
 
-# --- Bloque de prueba ---
+# Bloque de prueba (opcional)
 if __name__ == "__main__":
     data = '''
-    /* Ejemplo de consulta SQL */
-    SELECT name, age FROM users WHERE age >= 18 AND status = 'active';
+    /* Ejemplo */
     CREATE TABLE orders (id INT, amount DECIMAL);
+    SELECT name FROM users WHERE age >= 18;
     '''
     lexer.input(data)
-
     for tok in lexer:
         print(tok)
+    if getattr(lexer, 'lex_error', False):
+        print("Errores léxicos encontrados:")
+        for e in lexer.lex_errors:
+            print(e)
