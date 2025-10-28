@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# ANALIZADOR LÉXICO SQL (con registro de errores)
+# ------------------------------------------------------------
+# ANALIZADOR LÉXICO SQL
+# ------------------------------------------------------------
+# Define los tokens, palabras reservadas y reglas para
+# construir el analizador léxico con PLY.
+# ------------------------------------------------------------
 import ply.lex as lex
 
 # --- Palabras reservadas ---
@@ -15,7 +20,9 @@ reserved = {
     'decimal': 'DECIMAL',
     'sum': 'SUM',
     'count': 'COUNT',
-    'min': 'MIN'
+    'min': 'MIN',
+    'and': 'AND',
+    'or': 'OR'
 }
 
 # --- Tokens ---
@@ -23,7 +30,6 @@ tokens = [
     'ID', 'NUMBER', 'STRING',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
     'EQ', 'LT', 'LE', 'GT', 'GE', 'NE',
-    'AND', 'OR',
     'LPAREN', 'RPAREN', 'COMMA', 'SEMI'
 ] + list(reserved.values())
 

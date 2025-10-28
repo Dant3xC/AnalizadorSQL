@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# PROGRAMA PRINCIPAL: analiza archivo .sql
+# ------------------------------------------------------------
+# PROGRAMA PRINCIPAL: ANALIZADOR SQL
+# ------------------------------------------------------------
+# Lee un archivo .sql, realiza el análisis léxico y sintáctico
+# e imprime el árbol de sintaxis abstracta (AST).
+# ------------------------------------------------------------
 import sys
 from sql_lexer import lexer
 from sql_parser import parser
