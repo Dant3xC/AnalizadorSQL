@@ -1,0 +1,201 @@
+#---------------------------------------------------
+# IMPLEMENTACIÓN DEL ANALIZADOR SINTÁCTICO (YACC)
+#---------------------------------------------------
+
+import ply.yacc as yacc
+# Importamos la lista de TOKENS desde el archivo del lexer.
+# Asegúrate de que tu archivo lexer se llame 'lexer_sql.py'
+# o cambia 'lexer_sql' por el nombre de tu archivo.
+from lexer_sql import tokens, lexer
+
+# --- 1. Definición de la Precedencia de Operadores ---
+# Esto es crucial para resolver ambigüedades.
+# De menor a mayor precedencia.
+precedence = (
+    ('left', 'OR'),
+    ('left', 'AND'),
+    ('nonassoc', 'EQ', 'LT', 'GE'),  # No asociativos para evitar 'a < b < c'
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE'),
+    ('right', 'UMINUS'),           # Operador unario (para números negativos)
+)
+
+# --- 2. Símbolo Inicial de la Gramática ---
+start = 'programa'
+
+# --- 3. Definición de Reglas de la Gramática ---
+
+def p_programa(p):
+    'programa : sentencias'
+    # p[0] contendrá la lista de todas las sentencias analizadas
+    p[0] = p[1]
+    print("Análisis sintáctico completado con éxito.")
+
+def p_sentencias(p):
+    '''sentencias : sentencia
+                  | sentencias sentencia'''
+    if len(p) == 2:
+        p[0] = [p[1]]  # Inicia la lista con la primera sentencia
+    else:
+        p[0] = p[1] + [p[2]] # Agrega la nueva sentencia a la lista
+
+def p_sentencia(p):
+    '''sentencia : sentencia_create
+                 | sentencia_select'''
+    p[0] = p[1] # Pasa la sentencia analizada hacia arriba
+
+# --- Reglas para CREATE TABLE ---
+
+def p_sentencia_create(p):
+    'sentencia_create : CREATE TABLE ID LPAREN lista_columnas RPAREN'
+    # En un compilador real, aquí se crearía un nodo en el Árbol de Sintaxis Abstracto (AST)
+    p[0] = f"CREATE Table: {p[3]} (Columnas: {p[5]})"
+
+def p_lista_columnas(p):
+    '''lista_columnas : definicion_columna
+                      | lista_columnas COMMA definicion_columna'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+def p_definicion_columna(p):
+    'definicion_columna : ID tipo_dato'
+    p[0] = f"{p[1]} {p[2]}"
+
+def p_tipo_dato(p):
+    '''tipo_dato : INT
+                 | CHAR
+                 | DECIMAL'''
+    p[0] = p[1] # p[1] ya es el string "INT", "CHAR" o "DECIMAL"
+
+# --- Reglas para SELECT ... HAVING ---
+
+def p_sentencia_select(p):
+    'sentencia_select : SELECT lista_seleccion FROM ID HAVING condicion'
+    p[0] = f"SELECT {p[2]} FROM {p[4]} HAVING {p[6]}"
+
+def p_lista_seleccion(p):
+    '''lista_seleccion : elemento_seleccion
+                       | lista_seleccion COMMA elemento_seleccion'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+def p_elemento_seleccion(p):
+    '''elemento_seleccion : ID
+                          | llamada_funcion'''
+    p[0] = p[1]
+
+def p_llamada_funcion(p):
+    '''llamada_funcion : SUM LPAREN ID RPAREN
+                       | COUNT LPAREN ID RPAREN
+                       | MIN LPAREN ID RPAREN'''
+    p[0] = f"{p[1]}({p[3]})" # Ej: "SUM(columna_id)"
+
+# --- Reglas para Condiciones (Cláusula HAVING) ---
+
+def p_condicion(p):
+    '''condicion : condicion_simple
+                 | condicion AND condicion
+                 | condicion OR condicion'''
+    if len(p) == 2:
+        p[0] = p[1]  # condicion : condicion_simple
+    else:
+        p[0] = (p[1], p[2], p[3]) # (condicion_izquierda, "AND", condicion_derecha)
+
+def p_condicion_simple(p):
+    'condicion_simple : expresion operador_comparacion expresion'
+    p[0] = (p[1], p[2], p[3]) # (expresion_izquierda, "=", expresion_derecha)
+
+def p_operador_comparacion(p):
+    '''operador_comparacion : EQ
+                           | LT
+                           | GE'''
+    p[0] = p[1] # p[1] ya es el string "=", "<" o ">="
+
+# --- Reglas para Expresiones Aritméticas ---
+
+def p_expresion_binaria(p):
+    '''expresion : expresion PLUS expresion
+                 | expresion MINUS expresion
+                 | expresion TIMES expresion
+                 | expresion DIVIDE expresion'''
+    p[0] = (p[1], p[2], p[3]) # (expr_izq, "+", expr_der)
+
+def p_expresion_agrupada(p):
+    'expresion : LPAREN expresion RPAREN'
+    p[0] = p[2] # Pasa el valor de la expresión interna
+
+def p_expresion_unaria(p):
+    'expresion : MINUS expresion %prec UMINUS'
+    p[0] = ('-', p[2]) # (operador unario, expresion)
+
+def p_expresion_factor(p):
+    '''expresion : ID
+                 | NUMBER
+                 | llamada_funcion'''
+    p[0] = p[1]
+
+# --- 4. Manejo de Errores Sintácticos ---
+# Esto es requerido por el informe del proyecto [cite: 83]
+def p_error(p):
+    if p:
+        # p es el token que causó el error
+        print(f"Error de sintaxis en la línea {p.lineno}, token inesperado: '{p.value}' (Tipo: {p.type})")
+    else:
+        # Error por fin de archivo inesperado
+        print("Error de sintaxis: Fin de archivo inesperado (EOF)")
+
+# --- 5. Construcción del Parser ---
+parser = yacc.yacc()
+
+# --- 6. Bloque de Prueba (para ejecutar este archivo) ---
+if __name__ == "__main__":
+    
+    # Texto de prueba que incluye todas las reglas
+    data_prueba = '''
+        /* Prueba del Compilador Grupo 7 */
+        
+        CREATE TABLE usuarios (
+            id INT,
+            nombre CHAR,
+            saldo DECIMAL
+        );
+
+        SELECT id, SUM(saldo)
+        FROM usuarios
+        HAVING SUM(saldo) >= 1000 AND id < 50;
+        
+        /* Segunda sentencia create */
+        CREATE TABLE productos (id INT, precio DECIMAL);
+    '''
+
+    # Configuramos el lexer (importado) con la data
+    lexer.input(data_prueba)
+    
+    # Imprimimos los tokens (opcional, para depurar)
+    print("--- 1. Tokens Generados por LEX ---")
+    lexer.lineno = 1
+    tok_list = []
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        tok_list.append(tok)
+        print(tok)
+
+    print("\n--- 2. Resultado del Análisis Sintáctico (YACC) ---")
+    
+    # Reiniciamos el lexer (importante si se usó antes)
+    lexer.input(data_prueba)
+    lexer.lineno = 1
+    
+    # Llamamos al parser
+    resultado = parser.parse(lexer=lexer)
+    
+    if resultado:
+        print("\n--- 3. Estructura Generada (Resumen) ---")
+        for i, sentencia in enumerate(resultado, 1):
+            print(f"Sentencia {i}: {sentencia}")
