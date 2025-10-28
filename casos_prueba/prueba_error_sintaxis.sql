@@ -1,6 +1,2 @@
-/* Archivo de prueba con ERROR SINTÁCTICO.
-  Los tokens son válidos (CREATE, ID, '(', ID, INT, ')', ';')
-  pero falta la palabra clave 'TABLE'.
-*/
-
-CREATE usuarios (id INT);
+/* Error sintáctico: falta paréntesis de cierre */
+CREATE TABLE alumnos (id INT, nombre CHAR, promedio DECIMAL;

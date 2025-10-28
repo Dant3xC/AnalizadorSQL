@@ -1,13 +1,3 @@
-/* Archivo de prueba VALIDO.
-  Contiene una sentencia CREATE y una SELECT...HAVING.
-*/
-
-CREATE TABLE empleados (
-    id INT,
-    nombre CHAR,
-    salario DECIMAL
-);
-
-SELECT departamento, COUNT(id)
-FROM empleados
-HAVING COUNT(id) > 10;
+/* Ejemplo válido */
+CREATE TABLE alumnos (id INT, nombre CHAR, promedio DECIMAL);
+SELECT id, SUM(promedio) FROM alumnos HAVING SUM(promedio) > 6;
