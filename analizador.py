@@ -6,6 +6,7 @@
 # e imprime el árbol de sintaxis abstracta (AST).
 # ------------------------------------------------------------
 import sys
+import os
 from sql_lexer import lexer
 from sql_parser import parser
 
@@ -44,12 +45,48 @@ def analizar_archivo(ruta_archivo):
             print("\n--- Análisis Finalizado ---\n")
 
     except FileNotFoundError:
-        print(f"*** ERROR ***: No se pudo encontrar el archivo '{ruta_archivo}'.")
+        print(f"ERROR: No se pudo encontrar el archivo '{ruta_archivo}'.")
     except Exception as e:
-        print(f"*** ERROR INESPERADO ***: {e}")
+        print(f"ERROR INESPERADO: {e}")
+
+def mostrar_menu():
+    carpeta_casos = 'casos_prueba'
+    while True:
+        print("\n--- MENÚ DE CASOS DE PRUEBA ---")
+        try:
+            archivos = [f for f in os.listdir(carpeta_casos) if f.endswith('.sql') or f.endswith('.txt')]
+        except FileNotFoundError:
+            print(f"Error: No se encontró la carpeta '{carpeta_casos}'.")
+            return
+
+        if not archivos:
+            print("No hay archivos de prueba disponibles.")
+            return
+
+        for i, archivo in enumerate(archivos, 1):
+            print(f"{i}. {archivo}")
+        print("0. Salir")
+
+        opcion = input("\nSeleccione un archivo (número): ")
+
+        if opcion == '0':
+            print("Saliendo...")
+            break
+
+        try:
+            indice = int(opcion) - 1
+            if 0 <= indice < len(archivos):
+                archivo_seleccionado = os.path.join(carpeta_casos, archivos[indice])
+                analizar_archivo(archivo_seleccionado)
+                input("\nPresione Enter para continuar...")
+            else:
+                print("Opción inválida.")
+        except ValueError:
+            print("Por favor, ingrese un número válido.")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         analizar_archivo(sys.argv[1])
     else:
-        print("Uso: python analizador.py <archivo.sql>")
+        mostrar_menu()

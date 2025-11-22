@@ -74,7 +74,7 @@ def t_newline(t):
 def t_error(t):
     """
     Registra el error léxico en lexer.lex_errors y marca lexer.lex_error = True.
-    Luego avanza 1 carácter para continuar el escaneo (comportamiento tolerante),
+    Luego avanza 1 carácter para continuar el escaneo,
     pero ahora el flujo que llama al lexer puede decidir no parsear si hay errores.
     """
     # inicializar si es la primera vez
@@ -89,7 +89,7 @@ def t_error(t):
 # Construcción del lexer
 lexer = lex.lex()
 
-# Bloque de prueba (opcional)
+# Bloque de prueba 
 if __name__ == "__main__":
     data = '''
     /* Ejemplo */

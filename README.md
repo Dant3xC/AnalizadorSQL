@@ -2,69 +2,51 @@
 
 ¡Bienvenido al repositorio del Analizador Léxico y Sintáctico para un subconjunto de SQL! Este proyecto fue desarrollado como parte del curso de Compiladores y muestra cómo utilizar herramientas como `PLY` para construir un analizador robusto y funcional.
 
----
 
-## 📜 Descripción General
+## Descripción General
 
 Este proyecto consiste en un analizador léxico y sintáctico para un lenguaje SQL simplificado. El analizador es capaz de procesar sentencias `CREATE TABLE` y `SELECT ... HAVING`, validando la estructura léxica y sintáctica del código de entrada. Al finalizar, genera un Árbol Sintáctico Abstracto (AST) que representa la estructura jerárquica del código analizado.
 
 El objetivo principal es demostrar los conceptos clave del proceso de compilación, incluyendo:
-- **Análisis Léxico**: Reconocimiento de "palabras" o `tokens`.
-- **Análisis Sintáctico**: Verificación de la estructura gramatical del código.
-- **Manejo de Errores**: Identificación y reporte de errores léxicos y sintácticos.
+- Análisis Léxico: Reconocimiento de "palabras" o `tokens`.
+- Análisis Sintáctico: Verificación de la estructura gramatical del código.
+- Manejo de Errores: Identificación y reporte de errores léxicos y sintácticos.
 
----
 
-## 💻 Tecnología Utilizada
 
-- **Python**: El lenguaje de programación principal.
-- **PLY (Python Lex-Yacc)**: Una librería fundamental en Python para construir analizadores léxicos y sintácticos. `PLY` se inspira en las herramientas clásicas `Lex` y `Yacc` del ecosistema C, pero con la flexibilidad y simplicidad de Python.
+## Tecnología Utilizada
 
----
+- Python: El lenguaje de programación principal.
+- PLY (Python Lex-Yacc): Una librería fundamental en Python para construir analizadores léxicos y sintácticos. `PLY` se inspira en las herramientas clásicas `Lex` y `Yacc` del ecosistema C, pero con la flexibilidad y simplicidad de Python.
 
-## 🚀 Cómo Iniciar y Ejecutar el Analizador
 
-Para poner en marcha el analizador, sigue estos sencillos pasos.
+
+## Cómo Iniciar y Ejecutar el Analizador
 
 ### 1. Prerrequisitos
 
-Asegúrate de tener **Python 3** instalado. Además, necesitarás la librería `PLY`. Puedes instalarla fácilmente con `pip`:
+Tener Python 3 instalado. Además de la librería `PLY`. Para instalarla se utiliza el siguiente comando:
 
-```bash
 pip install ply
-```
+
 
 ### 2. Ejecutar el Analizador
 
-El programa principal es `analizador.py` y se ejecuta desde la línea de comandos, pasando como argumento la ruta a un archivo `.sql` que desees analizar.
+El programa principal es `analizador.py` y se ejecuta desde la línea de comandos, abriendo un menu simple que muestra todos los archivos de prueba disponibles en la carpeta `casos_prueba/` pudiendo agregar mas archivos de prueba en la misma y ejecutarlos desde el menu tanto .sql y .txt
 
-```bash
-python analizador.py <ruta_del_archivo.sql>
-```
+python analizador.py
 
-**Ejemplo:**
-Para analizar el archivo de prueba `prueba_ok.sql` que se encuentra en la carpeta `casos_prueba/`, ejecuta:
 
-```bash
-python analizador.py casos_prueba/prueba_ok.sql
-```
-
----
-
-## 📊 Resultados Esperados
+## Resultados Esperados
 
 Dentro de la carpeta `casos_prueba/` encontrarás tres archivos para demostrar el comportamiento del analizador.
 
 ### 1. Caso Exitoso (`prueba_ok.sql`)
 
-Al analizar un archivo con sintaxis correcta, el programa imprimirá el **Árbol Sintáctico Abstracto (AST)** resultante.
+Al analizar un archivo con sintaxis correcta, el programa imprimirá el Árbol Sintáctico Abstracto (AST) resultante.
 
-**Comando:**
-```bash
-python analizador.py casos_prueba/prueba_ok.sql
-```
 
-**Salida Esperada:**
+Salida Esperada:
 ```
 --- Iniciando análisis de: casos_prueba/prueba_ok.sql ---
 
@@ -83,12 +65,8 @@ Detectada sentencia SELECT para la tabla: alumnos
 
 Este archivo contiene un carácter inválido (`@`). El analizador léxico lo detectará y detendrá el proceso antes de llegar al análisis sintáctico.
 
-**Comando:**
-```bash
-python analizador.py casos_prueba/prueba_error_lexico.sql
-```
 
-**Salida Esperada:**
+Salida Esperada:
 ```
 --- Iniciando análisis de: casos_prueba/prueba_error_lexico.sql ---
 
@@ -102,16 +80,12 @@ Error léxico en línea 2: carácter inesperado '@'
 
 Este archivo tiene una sintaxis incorrecta (falta un paréntesis). El analizador léxico no encontrará problemas, pero el analizador sintáctico fallará y reportará el error.
 
-**Comando:**
-```bash
-python analizador.py casos_prueba/prueba_error_sintaxis.sql
-```
 
-**Salida Esperada:**
+Salida Esperada:
 ```
 --- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.sql ---
 
-*** ERROR DE SINTAXIS *** Línea 2: Token inesperado ';' (SEMI)
+ERROR DE SINTAXIS: Línea 2: Token inesperado ';' (SEMI)
 
 --- Análisis Finalizado ---
 ```
