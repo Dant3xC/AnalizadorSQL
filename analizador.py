@@ -45,9 +45,9 @@ def analizar_archivo(ruta_archivo):
             print("\n--- Análisis Finalizado ---\n")
 
     except FileNotFoundError:
-        print(f"*** ERROR ***: No se pudo encontrar el archivo '{ruta_archivo}'.")
+        print(f"ERROR: No se pudo encontrar el archivo '{ruta_archivo}'.")
     except Exception as e:
-        print(f"*** ERROR INESPERADO ***: {e}")
+        print(f"ERROR INESPERADO: {e}")
 
 def mostrar_menu():
     carpeta_casos = 'casos_prueba'

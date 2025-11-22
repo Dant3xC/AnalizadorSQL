@@ -116,9 +116,9 @@ def p_expression(p):
 # --- Manejo de errores ---
 def p_error(p):
     if p:
-        print(f"*** ERROR DE SINTAXIS *** Línea {p.lineno}: Token inesperado '{p.value}' ({p.type})")
+        print(f"ERROR DE SINTAXIS: Línea {p.lineno}: Token inesperado '{p.value}' ({p.type})")
     else:
-        print("*** ERROR DE SINTAXIS *** Fin de archivo inesperado (EOF).")
+        print("ERROR DE SINTAXIS: Fin de archivo inesperado (EOF).")
 
 # --- Construcción del parser ---
 parser = yacc.yacc()

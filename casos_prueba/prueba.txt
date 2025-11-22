@@ -1,7 +1,0 @@
-1Creat table alumnos (
-    id int,
-    nombre,
-    apellido char,
-    edad int,
-    promedio decimal
-);
