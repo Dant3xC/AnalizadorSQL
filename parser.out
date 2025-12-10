@@ -29,54 +29,59 @@ Rule 18    select_list -> select_list COMMA function
 Rule 19    function -> SUM LPAREN ID RPAREN
 Rule 20    function -> COUNT LPAREN ID RPAREN
 Rule 21    function -> MIN LPAREN ID RPAREN
-Rule 22    condition -> expression EQ expression
-Rule 23    condition -> expression LT expression
-Rule 24    condition -> expression LE expression
-Rule 25    condition -> expression GT expression
-Rule 26    condition -> expression GE expression
-Rule 27    condition -> expression NE expression
-Rule 28    condition -> condition AND condition
-Rule 29    condition -> condition OR condition
-Rule 30    expression -> expression PLUS expression
-Rule 31    expression -> expression MINUS expression
-Rule 32    expression -> expression TIMES expression
-Rule 33    expression -> expression DIVIDE expression
-Rule 34    expression -> ID
-Rule 35    expression -> NUMBER
-Rule 36    expression -> function
+Rule 22    condition -> condition_term
+Rule 23    condition -> condition OR condition_term
+Rule 24    condition_term -> condition_factor
+Rule 25    condition_term -> condition_term AND condition_factor
+Rule 26    condition_factor -> expression EQ expression
+Rule 27    condition_factor -> expression LT expression
+Rule 28    condition_factor -> expression LE expression
+Rule 29    condition_factor -> expression GT expression
+Rule 30    condition_factor -> expression GE expression
+Rule 31    condition_factor -> expression NE expression
+Rule 32    expression -> term
+Rule 33    expression -> expression PLUS term
+Rule 34    expression -> expression MINUS term
+Rule 35    term -> factor
+Rule 36    term -> term TIMES factor
+Rule 37    term -> term DIVIDE factor
+Rule 38    factor -> ID
+Rule 39    factor -> NUMBER
+Rule 40    factor -> function
+Rule 41    factor -> LPAREN expression RPAREN
 
 Terminals, with rules where they appear
 
-AND                  : 28
+AND                  : 25
 CHAR                 : 11
 COMMA                : 8 17 18
 COUNT                : 20
 CREATE               : 6
 DECIMAL              : 12
-DIVIDE               : 33
-EQ                   : 22
+DIVIDE               : 37
+EQ                   : 26
 FROM                 : 13 14
-GE                   : 26
-GT                   : 25
+GE                   : 30
+GT                   : 29
 HAVING               : 14
-ID                   : 6 9 13 14 15 17 19 20 21 34
+ID                   : 6 9 13 14 15 17 19 20 21 38
 INT                  : 10
-LE                   : 24
-LPAREN               : 6 19 20 21
-LT                   : 23
+LE                   : 28
+LPAREN               : 6 19 20 21 41
+LT                   : 27
 MIN                  : 21
-MINUS                : 31
-NE                   : 27
-NUMBER               : 35
-OR                   : 29
-PLUS                 : 30
-RPAREN               : 6 19 20 21
+MINUS                : 34
+NE                   : 31
+NUMBER               : 39
+OR                   : 23
+PLUS                 : 33
+RPAREN               : 6 19 20 21 41
 SELECT               : 13 14
 SEMI                 : 4 5
 STRING               : 
 SUM                  : 19
 TABLE                : 6
-TIMES                : 32
+TIMES                : 36
 WHERE                : 
 error                : 
 
@@ -84,16 +89,20 @@ Nonterminals, with rules where they appear
 
 column_definition    : 7 8
 column_definitions   : 6 8
-condition            : 14 28 28 29 29
+condition            : 14 23
+condition_factor     : 24 25
+condition_term       : 22 23 25
 create_statement     : 4
 data_type            : 9
-expression           : 22 22 23 23 24 24 25 25 26 26 27 27 30 30 31 31 32 32 33 33
-function             : 16 18 36
+expression           : 26 26 27 27 28 28 29 29 30 30 31 31 33 34 41
+factor               : 35 36 37
+function             : 16 18 40
 program              : 0
 select_list          : 13 14 17 18
 select_statement     : 5
 statement            : 2 3
 statements           : 1 3
+term                 : 32 33 34 36 37
 
 Parsing method: LALR
 
@@ -416,34 +425,44 @@ state 33
 state 34
 
     (14) select_statement -> SELECT select_list FROM ID HAVING . condition
-    (22) condition -> . expression EQ expression
-    (23) condition -> . expression LT expression
-    (24) condition -> . expression LE expression
-    (25) condition -> . expression GT expression
-    (26) condition -> . expression GE expression
-    (27) condition -> . expression NE expression
-    (28) condition -> . condition AND condition
-    (29) condition -> . condition OR condition
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (22) condition -> . condition_term
+    (23) condition -> . condition OR condition_term
+    (24) condition_term -> . condition_factor
+    (25) condition_term -> . condition_term AND condition_factor
+    (26) condition_factor -> . expression EQ expression
+    (27) condition_factor -> . expression LT expression
+    (28) condition_factor -> . expression LE expression
+    (29) condition_factor -> . expression GT expression
+    (30) condition_factor -> . expression GE expression
+    (31) condition_factor -> . expression NE expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
     condition                      shift and go to state 45
-    expression                     shift and go to state 46
-    function                       shift and go to state 48
+    condition_term                 shift and go to state 46
+    condition_factor               shift and go to state 47
+    expression                     shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 35
 
@@ -451,6 +470,8 @@ state 35
 
     FROM            reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     COMMA           reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
+    TIMES           reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
+    DIVIDE          reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     EQ              reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     LT              reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     LE              reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
@@ -459,8 +480,7 @@ state 35
     NE              reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     PLUS            reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     MINUS           reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
-    TIMES           reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
-    DIVIDE          reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
+    RPAREN          reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     AND             reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     OR              reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
     SEMI            reduce using rule 19 (function -> SUM LPAREN ID RPAREN .)
@@ -472,6 +492,8 @@ state 36
 
     FROM            reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     COMMA           reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
+    TIMES           reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
+    DIVIDE          reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     EQ              reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     LT              reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     LE              reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
@@ -480,8 +502,7 @@ state 36
     NE              reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     PLUS            reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     MINUS           reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
-    TIMES           reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
-    DIVIDE          reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
+    RPAREN          reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     AND             reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     OR              reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
     SEMI            reduce using rule 20 (function -> COUNT LPAREN ID RPAREN .)
@@ -493,6 +514,8 @@ state 37
 
     FROM            reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     COMMA           reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
+    TIMES           reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
+    DIVIDE          reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     EQ              reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     LT              reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     LE              reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
@@ -501,8 +524,7 @@ state 37
     NE              reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     PLUS            reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     MINUS           reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
-    TIMES           reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
-    DIVIDE          reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
+    RPAREN          reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     AND             reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     OR              reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
     SEMI            reduce using rule 21 (function -> MIN LPAREN ID RPAREN .)
@@ -554,102 +576,189 @@ state 43
 
     ID              shift and go to state 31
 
-    column_definition              shift and go to state 49
+    column_definition              shift and go to state 54
 
 state 44
 
-    (34) expression -> ID .
+    (38) factor -> ID .
 
-    EQ              reduce using rule 34 (expression -> ID .)
-    LT              reduce using rule 34 (expression -> ID .)
-    LE              reduce using rule 34 (expression -> ID .)
-    GT              reduce using rule 34 (expression -> ID .)
-    GE              reduce using rule 34 (expression -> ID .)
-    NE              reduce using rule 34 (expression -> ID .)
-    PLUS            reduce using rule 34 (expression -> ID .)
-    MINUS           reduce using rule 34 (expression -> ID .)
-    TIMES           reduce using rule 34 (expression -> ID .)
-    DIVIDE          reduce using rule 34 (expression -> ID .)
-    AND             reduce using rule 34 (expression -> ID .)
-    OR              reduce using rule 34 (expression -> ID .)
-    SEMI            reduce using rule 34 (expression -> ID .)
+    TIMES           reduce using rule 38 (factor -> ID .)
+    DIVIDE          reduce using rule 38 (factor -> ID .)
+    EQ              reduce using rule 38 (factor -> ID .)
+    LT              reduce using rule 38 (factor -> ID .)
+    LE              reduce using rule 38 (factor -> ID .)
+    GT              reduce using rule 38 (factor -> ID .)
+    GE              reduce using rule 38 (factor -> ID .)
+    NE              reduce using rule 38 (factor -> ID .)
+    PLUS            reduce using rule 38 (factor -> ID .)
+    MINUS           reduce using rule 38 (factor -> ID .)
+    RPAREN          reduce using rule 38 (factor -> ID .)
+    AND             reduce using rule 38 (factor -> ID .)
+    OR              reduce using rule 38 (factor -> ID .)
+    SEMI            reduce using rule 38 (factor -> ID .)
 
 
 state 45
 
     (14) select_statement -> SELECT select_list FROM ID HAVING condition .
-    (28) condition -> condition . AND condition
-    (29) condition -> condition . OR condition
+    (23) condition -> condition . OR condition_term
 
     SEMI            reduce using rule 14 (select_statement -> SELECT select_list FROM ID HAVING condition .)
-    AND             shift and go to state 50
-    OR              shift and go to state 51
+    OR              shift and go to state 55
 
 
 state 46
 
-    (22) condition -> expression . EQ expression
-    (23) condition -> expression . LT expression
-    (24) condition -> expression . LE expression
-    (25) condition -> expression . GT expression
-    (26) condition -> expression . GE expression
-    (27) condition -> expression . NE expression
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (22) condition -> condition_term .
+    (25) condition_term -> condition_term . AND condition_factor
 
-    EQ              shift and go to state 52
-    LT              shift and go to state 53
-    LE              shift and go to state 54
-    GT              shift and go to state 55
-    GE              shift and go to state 56
-    NE              shift and go to state 57
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    OR              reduce using rule 22 (condition -> condition_term .)
+    SEMI            reduce using rule 22 (condition -> condition_term .)
+    AND             shift and go to state 56
 
 
 state 47
 
-    (35) expression -> NUMBER .
+    (24) condition_term -> condition_factor .
 
-    EQ              reduce using rule 35 (expression -> NUMBER .)
-    LT              reduce using rule 35 (expression -> NUMBER .)
-    LE              reduce using rule 35 (expression -> NUMBER .)
-    GT              reduce using rule 35 (expression -> NUMBER .)
-    GE              reduce using rule 35 (expression -> NUMBER .)
-    NE              reduce using rule 35 (expression -> NUMBER .)
-    PLUS            reduce using rule 35 (expression -> NUMBER .)
-    MINUS           reduce using rule 35 (expression -> NUMBER .)
-    TIMES           reduce using rule 35 (expression -> NUMBER .)
-    DIVIDE          reduce using rule 35 (expression -> NUMBER .)
-    AND             reduce using rule 35 (expression -> NUMBER .)
-    OR              reduce using rule 35 (expression -> NUMBER .)
-    SEMI            reduce using rule 35 (expression -> NUMBER .)
+    AND             reduce using rule 24 (condition_term -> condition_factor .)
+    OR              reduce using rule 24 (condition_term -> condition_factor .)
+    SEMI            reduce using rule 24 (condition_term -> condition_factor .)
 
 
 state 48
 
-    (36) expression -> function .
+    (26) condition_factor -> expression . EQ expression
+    (27) condition_factor -> expression . LT expression
+    (28) condition_factor -> expression . LE expression
+    (29) condition_factor -> expression . GT expression
+    (30) condition_factor -> expression . GE expression
+    (31) condition_factor -> expression . NE expression
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    EQ              reduce using rule 36 (expression -> function .)
-    LT              reduce using rule 36 (expression -> function .)
-    LE              reduce using rule 36 (expression -> function .)
-    GT              reduce using rule 36 (expression -> function .)
-    GE              reduce using rule 36 (expression -> function .)
-    NE              reduce using rule 36 (expression -> function .)
-    PLUS            reduce using rule 36 (expression -> function .)
-    MINUS           reduce using rule 36 (expression -> function .)
-    TIMES           reduce using rule 36 (expression -> function .)
-    DIVIDE          reduce using rule 36 (expression -> function .)
-    AND             reduce using rule 36 (expression -> function .)
-    OR              reduce using rule 36 (expression -> function .)
-    SEMI            reduce using rule 36 (expression -> function .)
+    EQ              shift and go to state 57
+    LT              shift and go to state 58
+    LE              shift and go to state 59
+    GT              shift and go to state 60
+    GE              shift and go to state 61
+    NE              shift and go to state 62
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
 
 state 49
+
+    (32) expression -> term .
+    (36) term -> term . TIMES factor
+    (37) term -> term . DIVIDE factor
+
+    EQ              reduce using rule 32 (expression -> term .)
+    LT              reduce using rule 32 (expression -> term .)
+    LE              reduce using rule 32 (expression -> term .)
+    GT              reduce using rule 32 (expression -> term .)
+    GE              reduce using rule 32 (expression -> term .)
+    NE              reduce using rule 32 (expression -> term .)
+    PLUS            reduce using rule 32 (expression -> term .)
+    MINUS           reduce using rule 32 (expression -> term .)
+    RPAREN          reduce using rule 32 (expression -> term .)
+    AND             reduce using rule 32 (expression -> term .)
+    OR              reduce using rule 32 (expression -> term .)
+    SEMI            reduce using rule 32 (expression -> term .)
+    TIMES           shift and go to state 65
+    DIVIDE          shift and go to state 66
+
+
+state 50
+
+    (35) term -> factor .
+
+    TIMES           reduce using rule 35 (term -> factor .)
+    DIVIDE          reduce using rule 35 (term -> factor .)
+    EQ              reduce using rule 35 (term -> factor .)
+    LT              reduce using rule 35 (term -> factor .)
+    LE              reduce using rule 35 (term -> factor .)
+    GT              reduce using rule 35 (term -> factor .)
+    GE              reduce using rule 35 (term -> factor .)
+    NE              reduce using rule 35 (term -> factor .)
+    PLUS            reduce using rule 35 (term -> factor .)
+    MINUS           reduce using rule 35 (term -> factor .)
+    RPAREN          reduce using rule 35 (term -> factor .)
+    AND             reduce using rule 35 (term -> factor .)
+    OR              reduce using rule 35 (term -> factor .)
+    SEMI            reduce using rule 35 (term -> factor .)
+
+
+state 51
+
+    (39) factor -> NUMBER .
+
+    TIMES           reduce using rule 39 (factor -> NUMBER .)
+    DIVIDE          reduce using rule 39 (factor -> NUMBER .)
+    EQ              reduce using rule 39 (factor -> NUMBER .)
+    LT              reduce using rule 39 (factor -> NUMBER .)
+    LE              reduce using rule 39 (factor -> NUMBER .)
+    GT              reduce using rule 39 (factor -> NUMBER .)
+    GE              reduce using rule 39 (factor -> NUMBER .)
+    NE              reduce using rule 39 (factor -> NUMBER .)
+    PLUS            reduce using rule 39 (factor -> NUMBER .)
+    MINUS           reduce using rule 39 (factor -> NUMBER .)
+    RPAREN          reduce using rule 39 (factor -> NUMBER .)
+    AND             reduce using rule 39 (factor -> NUMBER .)
+    OR              reduce using rule 39 (factor -> NUMBER .)
+    SEMI            reduce using rule 39 (factor -> NUMBER .)
+
+
+state 52
+
+    (40) factor -> function .
+
+    TIMES           reduce using rule 40 (factor -> function .)
+    DIVIDE          reduce using rule 40 (factor -> function .)
+    EQ              reduce using rule 40 (factor -> function .)
+    LT              reduce using rule 40 (factor -> function .)
+    LE              reduce using rule 40 (factor -> function .)
+    GT              reduce using rule 40 (factor -> function .)
+    GE              reduce using rule 40 (factor -> function .)
+    NE              reduce using rule 40 (factor -> function .)
+    PLUS            reduce using rule 40 (factor -> function .)
+    MINUS           reduce using rule 40 (factor -> function .)
+    RPAREN          reduce using rule 40 (factor -> function .)
+    AND             reduce using rule 40 (factor -> function .)
+    OR              reduce using rule 40 (factor -> function .)
+    SEMI            reduce using rule 40 (factor -> function .)
+
+
+state 53
+
+    (41) factor -> LPAREN . expression RPAREN
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
+
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
+
+    expression                     shift and go to state 67
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
+
+state 54
 
     (8) column_definitions -> column_definitions COMMA column_definition .
 
@@ -657,538 +766,555 @@ state 49
     COMMA           reduce using rule 8 (column_definitions -> column_definitions COMMA column_definition .)
 
 
-state 50
-
-    (28) condition -> condition AND . condition
-    (22) condition -> . expression EQ expression
-    (23) condition -> . expression LT expression
-    (24) condition -> . expression LE expression
-    (25) condition -> . expression GT expression
-    (26) condition -> . expression GE expression
-    (27) condition -> . expression NE expression
-    (28) condition -> . condition AND condition
-    (29) condition -> . condition OR condition
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    condition                      shift and go to state 62
-    expression                     shift and go to state 46
-    function                       shift and go to state 48
-
-state 51
-
-    (29) condition -> condition OR . condition
-    (22) condition -> . expression EQ expression
-    (23) condition -> . expression LT expression
-    (24) condition -> . expression LE expression
-    (25) condition -> . expression GT expression
-    (26) condition -> . expression GE expression
-    (27) condition -> . expression NE expression
-    (28) condition -> . condition AND condition
-    (29) condition -> . condition OR condition
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    condition                      shift and go to state 63
-    expression                     shift and go to state 46
-    function                       shift and go to state 48
-
-state 52
-
-    (22) condition -> expression EQ . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    expression                     shift and go to state 64
-    function                       shift and go to state 48
-
-state 53
-
-    (23) condition -> expression LT . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    expression                     shift and go to state 65
-    function                       shift and go to state 48
-
-state 54
-
-    (24) condition -> expression LE . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    expression                     shift and go to state 66
-    function                       shift and go to state 48
-
 state 55
 
-    (25) condition -> expression GT . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (23) condition -> condition OR . condition_term
+    (24) condition_term -> . condition_factor
+    (25) condition_term -> . condition_term AND condition_factor
+    (26) condition_factor -> . expression EQ expression
+    (27) condition_factor -> . expression LT expression
+    (28) condition_factor -> . expression LE expression
+    (29) condition_factor -> . expression GT expression
+    (30) condition_factor -> . expression GE expression
+    (31) condition_factor -> . expression NE expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
-    expression                     shift and go to state 67
-    function                       shift and go to state 48
+    condition_term                 shift and go to state 68
+    condition_factor               shift and go to state 47
+    expression                     shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 56
 
-    (26) condition -> expression GE . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (25) condition_term -> condition_term AND . condition_factor
+    (26) condition_factor -> . expression EQ expression
+    (27) condition_factor -> . expression LT expression
+    (28) condition_factor -> . expression LE expression
+    (29) condition_factor -> . expression GT expression
+    (30) condition_factor -> . expression GE expression
+    (31) condition_factor -> . expression NE expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
-    expression                     shift and go to state 68
-    function                       shift and go to state 48
+    condition_factor               shift and go to state 69
+    expression                     shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 57
 
-    (27) condition -> expression NE . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (26) condition_factor -> expression EQ . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
-    SUM             shift and go to state 15
-    COUNT           shift and go to state 16
-    MIN             shift and go to state 17
-
-    expression                     shift and go to state 69
-    function                       shift and go to state 48
-
-state 58
-
-    (30) expression -> expression PLUS . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
-    (19) function -> . SUM LPAREN ID RPAREN
-    (20) function -> . COUNT LPAREN ID RPAREN
-    (21) function -> . MIN LPAREN ID RPAREN
-
-    ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
     expression                     shift and go to state 70
-    function                       shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
-state 59
+state 58
 
-    (31) expression -> expression MINUS . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (27) condition_factor -> expression LT . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
     expression                     shift and go to state 71
-    function                       shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
-state 60
+state 59
 
-    (32) expression -> expression TIMES . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (28) condition_factor -> expression LE . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
     expression                     shift and go to state 72
-    function                       shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
-state 61
+state 60
 
-    (33) expression -> expression DIVIDE . expression
-    (30) expression -> . expression PLUS expression
-    (31) expression -> . expression MINUS expression
-    (32) expression -> . expression TIMES expression
-    (33) expression -> . expression DIVIDE expression
-    (34) expression -> . ID
-    (35) expression -> . NUMBER
-    (36) expression -> . function
+    (29) condition_factor -> expression GT . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
     (19) function -> . SUM LPAREN ID RPAREN
     (20) function -> . COUNT LPAREN ID RPAREN
     (21) function -> . MIN LPAREN ID RPAREN
 
     ID              shift and go to state 44
-    NUMBER          shift and go to state 47
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
     SUM             shift and go to state 15
     COUNT           shift and go to state 16
     MIN             shift and go to state 17
 
     expression                     shift and go to state 73
-    function                       shift and go to state 48
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
+
+state 61
+
+    (30) condition_factor -> expression GE . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
+
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
+
+    expression                     shift and go to state 74
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 62
 
-    (28) condition -> condition AND condition .
-    (28) condition -> condition . AND condition
-    (29) condition -> condition . OR condition
+    (31) condition_factor -> expression NE . expression
+    (32) expression -> . term
+    (33) expression -> . expression PLUS term
+    (34) expression -> . expression MINUS term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
 
-    AND             reduce using rule 28 (condition -> condition AND condition .)
-    OR              reduce using rule 28 (condition -> condition AND condition .)
-    SEMI            reduce using rule 28 (condition -> condition AND condition .)
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
 
-  ! AND             [ shift and go to state 50 ]
-  ! OR              [ shift and go to state 51 ]
-
+    expression                     shift and go to state 75
+    term                           shift and go to state 49
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 63
 
-    (29) condition -> condition OR condition .
-    (28) condition -> condition . AND condition
-    (29) condition -> condition . OR condition
+    (33) expression -> expression PLUS . term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
 
-    OR              reduce using rule 29 (condition -> condition OR condition .)
-    SEMI            reduce using rule 29 (condition -> condition OR condition .)
-    AND             shift and go to state 50
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
 
-  ! AND             [ reduce using rule 29 (condition -> condition OR condition .) ]
-  ! OR              [ shift and go to state 51 ]
-
+    term                           shift and go to state 76
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 64
 
-    (22) condition -> expression EQ expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (34) expression -> expression MINUS . term
+    (35) term -> . factor
+    (36) term -> . term TIMES factor
+    (37) term -> . term DIVIDE factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
 
-    AND             reduce using rule 22 (condition -> expression EQ expression .)
-    OR              reduce using rule 22 (condition -> expression EQ expression .)
-    SEMI            reduce using rule 22 (condition -> expression EQ expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
 
+    term                           shift and go to state 77
+    factor                         shift and go to state 50
+    function                       shift and go to state 52
 
 state 65
 
-    (23) condition -> expression LT expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (36) term -> term TIMES . factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
 
-    AND             reduce using rule 23 (condition -> expression LT expression .)
-    OR              reduce using rule 23 (condition -> expression LT expression .)
-    SEMI            reduce using rule 23 (condition -> expression LT expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
 
+    factor                         shift and go to state 78
+    function                       shift and go to state 52
 
 state 66
 
-    (24) condition -> expression LE expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (37) term -> term DIVIDE . factor
+    (38) factor -> . ID
+    (39) factor -> . NUMBER
+    (40) factor -> . function
+    (41) factor -> . LPAREN expression RPAREN
+    (19) function -> . SUM LPAREN ID RPAREN
+    (20) function -> . COUNT LPAREN ID RPAREN
+    (21) function -> . MIN LPAREN ID RPAREN
 
-    AND             reduce using rule 24 (condition -> expression LE expression .)
-    OR              reduce using rule 24 (condition -> expression LE expression .)
-    SEMI            reduce using rule 24 (condition -> expression LE expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    ID              shift and go to state 44
+    NUMBER          shift and go to state 51
+    LPAREN          shift and go to state 53
+    SUM             shift and go to state 15
+    COUNT           shift and go to state 16
+    MIN             shift and go to state 17
 
+    factor                         shift and go to state 79
+    function                       shift and go to state 52
 
 state 67
 
-    (25) condition -> expression GT expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (41) factor -> LPAREN expression . RPAREN
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    AND             reduce using rule 25 (condition -> expression GT expression .)
-    OR              reduce using rule 25 (condition -> expression GT expression .)
-    SEMI            reduce using rule 25 (condition -> expression GT expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    RPAREN          shift and go to state 80
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
 
 state 68
 
-    (26) condition -> expression GE expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (23) condition -> condition OR condition_term .
+    (25) condition_term -> condition_term . AND condition_factor
 
-    AND             reduce using rule 26 (condition -> expression GE expression .)
-    OR              reduce using rule 26 (condition -> expression GE expression .)
-    SEMI            reduce using rule 26 (condition -> expression GE expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    OR              reduce using rule 23 (condition -> condition OR condition_term .)
+    SEMI            reduce using rule 23 (condition -> condition OR condition_term .)
+    AND             shift and go to state 56
 
 
 state 69
 
-    (27) condition -> expression NE expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (25) condition_term -> condition_term AND condition_factor .
 
-    AND             reduce using rule 27 (condition -> expression NE expression .)
-    OR              reduce using rule 27 (condition -> expression NE expression .)
-    SEMI            reduce using rule 27 (condition -> expression NE expression .)
-    PLUS            shift and go to state 58
-    MINUS           shift and go to state 59
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
+    AND             reduce using rule 25 (condition_term -> condition_term AND condition_factor .)
+    OR              reduce using rule 25 (condition_term -> condition_term AND condition_factor .)
+    SEMI            reduce using rule 25 (condition_term -> condition_term AND condition_factor .)
 
 
 state 70
 
-    (30) expression -> expression PLUS expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (26) condition_factor -> expression EQ expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    EQ              reduce using rule 30 (expression -> expression PLUS expression .)
-    LT              reduce using rule 30 (expression -> expression PLUS expression .)
-    LE              reduce using rule 30 (expression -> expression PLUS expression .)
-    GT              reduce using rule 30 (expression -> expression PLUS expression .)
-    GE              reduce using rule 30 (expression -> expression PLUS expression .)
-    NE              reduce using rule 30 (expression -> expression PLUS expression .)
-    PLUS            reduce using rule 30 (expression -> expression PLUS expression .)
-    MINUS           reduce using rule 30 (expression -> expression PLUS expression .)
-    AND             reduce using rule 30 (expression -> expression PLUS expression .)
-    OR              reduce using rule 30 (expression -> expression PLUS expression .)
-    SEMI            reduce using rule 30 (expression -> expression PLUS expression .)
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
-
-  ! TIMES           [ reduce using rule 30 (expression -> expression PLUS expression .) ]
-  ! DIVIDE          [ reduce using rule 30 (expression -> expression PLUS expression .) ]
-  ! PLUS            [ shift and go to state 58 ]
-  ! MINUS           [ shift and go to state 59 ]
+    AND             reduce using rule 26 (condition_factor -> expression EQ expression .)
+    OR              reduce using rule 26 (condition_factor -> expression EQ expression .)
+    SEMI            reduce using rule 26 (condition_factor -> expression EQ expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
 
 state 71
 
-    (31) expression -> expression MINUS expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (27) condition_factor -> expression LT expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    EQ              reduce using rule 31 (expression -> expression MINUS expression .)
-    LT              reduce using rule 31 (expression -> expression MINUS expression .)
-    LE              reduce using rule 31 (expression -> expression MINUS expression .)
-    GT              reduce using rule 31 (expression -> expression MINUS expression .)
-    GE              reduce using rule 31 (expression -> expression MINUS expression .)
-    NE              reduce using rule 31 (expression -> expression MINUS expression .)
-    PLUS            reduce using rule 31 (expression -> expression MINUS expression .)
-    MINUS           reduce using rule 31 (expression -> expression MINUS expression .)
-    AND             reduce using rule 31 (expression -> expression MINUS expression .)
-    OR              reduce using rule 31 (expression -> expression MINUS expression .)
-    SEMI            reduce using rule 31 (expression -> expression MINUS expression .)
-    TIMES           shift and go to state 60
-    DIVIDE          shift and go to state 61
-
-  ! TIMES           [ reduce using rule 31 (expression -> expression MINUS expression .) ]
-  ! DIVIDE          [ reduce using rule 31 (expression -> expression MINUS expression .) ]
-  ! PLUS            [ shift and go to state 58 ]
-  ! MINUS           [ shift and go to state 59 ]
+    AND             reduce using rule 27 (condition_factor -> expression LT expression .)
+    OR              reduce using rule 27 (condition_factor -> expression LT expression .)
+    SEMI            reduce using rule 27 (condition_factor -> expression LT expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
 
 state 72
 
-    (32) expression -> expression TIMES expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (28) condition_factor -> expression LE expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    EQ              reduce using rule 32 (expression -> expression TIMES expression .)
-    LT              reduce using rule 32 (expression -> expression TIMES expression .)
-    LE              reduce using rule 32 (expression -> expression TIMES expression .)
-    GT              reduce using rule 32 (expression -> expression TIMES expression .)
-    GE              reduce using rule 32 (expression -> expression TIMES expression .)
-    NE              reduce using rule 32 (expression -> expression TIMES expression .)
-    PLUS            reduce using rule 32 (expression -> expression TIMES expression .)
-    MINUS           reduce using rule 32 (expression -> expression TIMES expression .)
-    TIMES           reduce using rule 32 (expression -> expression TIMES expression .)
-    DIVIDE          reduce using rule 32 (expression -> expression TIMES expression .)
-    AND             reduce using rule 32 (expression -> expression TIMES expression .)
-    OR              reduce using rule 32 (expression -> expression TIMES expression .)
-    SEMI            reduce using rule 32 (expression -> expression TIMES expression .)
-
-  ! PLUS            [ shift and go to state 58 ]
-  ! MINUS           [ shift and go to state 59 ]
-  ! TIMES           [ shift and go to state 60 ]
-  ! DIVIDE          [ shift and go to state 61 ]
+    AND             reduce using rule 28 (condition_factor -> expression LE expression .)
+    OR              reduce using rule 28 (condition_factor -> expression LE expression .)
+    SEMI            reduce using rule 28 (condition_factor -> expression LE expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
 
 state 73
 
-    (33) expression -> expression DIVIDE expression .
-    (30) expression -> expression . PLUS expression
-    (31) expression -> expression . MINUS expression
-    (32) expression -> expression . TIMES expression
-    (33) expression -> expression . DIVIDE expression
+    (29) condition_factor -> expression GT expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
 
-    EQ              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    LT              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    LE              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    GT              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    GE              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    NE              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    PLUS            reduce using rule 33 (expression -> expression DIVIDE expression .)
-    MINUS           reduce using rule 33 (expression -> expression DIVIDE expression .)
-    TIMES           reduce using rule 33 (expression -> expression DIVIDE expression .)
-    DIVIDE          reduce using rule 33 (expression -> expression DIVIDE expression .)
-    AND             reduce using rule 33 (expression -> expression DIVIDE expression .)
-    OR              reduce using rule 33 (expression -> expression DIVIDE expression .)
-    SEMI            reduce using rule 33 (expression -> expression DIVIDE expression .)
+    AND             reduce using rule 29 (condition_factor -> expression GT expression .)
+    OR              reduce using rule 29 (condition_factor -> expression GT expression .)
+    SEMI            reduce using rule 29 (condition_factor -> expression GT expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
 
-  ! PLUS            [ shift and go to state 58 ]
-  ! MINUS           [ shift and go to state 59 ]
-  ! TIMES           [ shift and go to state 60 ]
-  ! DIVIDE          [ shift and go to state 61 ]
+
+state 74
+
+    (30) condition_factor -> expression GE expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
+
+    AND             reduce using rule 30 (condition_factor -> expression GE expression .)
+    OR              reduce using rule 30 (condition_factor -> expression GE expression .)
+    SEMI            reduce using rule 30 (condition_factor -> expression GE expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
+
+
+state 75
+
+    (31) condition_factor -> expression NE expression .
+    (33) expression -> expression . PLUS term
+    (34) expression -> expression . MINUS term
+
+    AND             reduce using rule 31 (condition_factor -> expression NE expression .)
+    OR              reduce using rule 31 (condition_factor -> expression NE expression .)
+    SEMI            reduce using rule 31 (condition_factor -> expression NE expression .)
+    PLUS            shift and go to state 63
+    MINUS           shift and go to state 64
+
+
+state 76
+
+    (33) expression -> expression PLUS term .
+    (36) term -> term . TIMES factor
+    (37) term -> term . DIVIDE factor
+
+    EQ              reduce using rule 33 (expression -> expression PLUS term .)
+    LT              reduce using rule 33 (expression -> expression PLUS term .)
+    LE              reduce using rule 33 (expression -> expression PLUS term .)
+    GT              reduce using rule 33 (expression -> expression PLUS term .)
+    GE              reduce using rule 33 (expression -> expression PLUS term .)
+    NE              reduce using rule 33 (expression -> expression PLUS term .)
+    PLUS            reduce using rule 33 (expression -> expression PLUS term .)
+    MINUS           reduce using rule 33 (expression -> expression PLUS term .)
+    RPAREN          reduce using rule 33 (expression -> expression PLUS term .)
+    AND             reduce using rule 33 (expression -> expression PLUS term .)
+    OR              reduce using rule 33 (expression -> expression PLUS term .)
+    SEMI            reduce using rule 33 (expression -> expression PLUS term .)
+    TIMES           shift and go to state 65
+    DIVIDE          shift and go to state 66
+
+
+state 77
+
+    (34) expression -> expression MINUS term .
+    (36) term -> term . TIMES factor
+    (37) term -> term . DIVIDE factor
+
+    EQ              reduce using rule 34 (expression -> expression MINUS term .)
+    LT              reduce using rule 34 (expression -> expression MINUS term .)
+    LE              reduce using rule 34 (expression -> expression MINUS term .)
+    GT              reduce using rule 34 (expression -> expression MINUS term .)
+    GE              reduce using rule 34 (expression -> expression MINUS term .)
+    NE              reduce using rule 34 (expression -> expression MINUS term .)
+    PLUS            reduce using rule 34 (expression -> expression MINUS term .)
+    MINUS           reduce using rule 34 (expression -> expression MINUS term .)
+    RPAREN          reduce using rule 34 (expression -> expression MINUS term .)
+    AND             reduce using rule 34 (expression -> expression MINUS term .)
+    OR              reduce using rule 34 (expression -> expression MINUS term .)
+    SEMI            reduce using rule 34 (expression -> expression MINUS term .)
+    TIMES           shift and go to state 65
+    DIVIDE          shift and go to state 66
+
+
+state 78
+
+    (36) term -> term TIMES factor .
+
+    TIMES           reduce using rule 36 (term -> term TIMES factor .)
+    DIVIDE          reduce using rule 36 (term -> term TIMES factor .)
+    EQ              reduce using rule 36 (term -> term TIMES factor .)
+    LT              reduce using rule 36 (term -> term TIMES factor .)
+    LE              reduce using rule 36 (term -> term TIMES factor .)
+    GT              reduce using rule 36 (term -> term TIMES factor .)
+    GE              reduce using rule 36 (term -> term TIMES factor .)
+    NE              reduce using rule 36 (term -> term TIMES factor .)
+    PLUS            reduce using rule 36 (term -> term TIMES factor .)
+    MINUS           reduce using rule 36 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 36 (term -> term TIMES factor .)
+    AND             reduce using rule 36 (term -> term TIMES factor .)
+    OR              reduce using rule 36 (term -> term TIMES factor .)
+    SEMI            reduce using rule 36 (term -> term TIMES factor .)
+
+
+state 79
+
+    (37) term -> term DIVIDE factor .
+
+    TIMES           reduce using rule 37 (term -> term DIVIDE factor .)
+    DIVIDE          reduce using rule 37 (term -> term DIVIDE factor .)
+    EQ              reduce using rule 37 (term -> term DIVIDE factor .)
+    LT              reduce using rule 37 (term -> term DIVIDE factor .)
+    LE              reduce using rule 37 (term -> term DIVIDE factor .)
+    GT              reduce using rule 37 (term -> term DIVIDE factor .)
+    GE              reduce using rule 37 (term -> term DIVIDE factor .)
+    NE              reduce using rule 37 (term -> term DIVIDE factor .)
+    PLUS            reduce using rule 37 (term -> term DIVIDE factor .)
+    MINUS           reduce using rule 37 (term -> term DIVIDE factor .)
+    RPAREN          reduce using rule 37 (term -> term DIVIDE factor .)
+    AND             reduce using rule 37 (term -> term DIVIDE factor .)
+    OR              reduce using rule 37 (term -> term DIVIDE factor .)
+    SEMI            reduce using rule 37 (term -> term DIVIDE factor .)
+
+
+state 80
+
+    (41) factor -> LPAREN expression RPAREN .
+
+    TIMES           reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    EQ              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    LT              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    LE              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    GT              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    GE              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    NE              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    AND             reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    OR              reduce using rule 41 (factor -> LPAREN expression RPAREN .)
+    SEMI            reduce using rule 41 (factor -> LPAREN expression RPAREN .)
 
