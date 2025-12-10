@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# sql_parser.py
+# ------------------------------------------------------------
+# ANALIZADOR SINTACTICO 
+# ------------------------------------------------------------
+# Define la gramática para el subconjunto SQL del grupo 7:
+# CREATE TABLE / SELECT ... HAVING
+# ------------------------------------------------------------
 
 import ply.yacc as yacc
 from sql_lexer import tokens, lexer
@@ -13,7 +18,7 @@ hubo_error = False
 def p_program(p):
     '''program : statements'''
     global hubo_error
-    # Solo imprimimos "Válido" si NO hubo ningún error durante el análisis
+    # Solo imprime "Válido" si no hubo ningún error durante el análisis
     if not hubo_error:
         print("-> Análisis sintáctico finalizado: Programa válido.")
     p[0] = p[1]
@@ -79,7 +84,7 @@ def p_function(p):
                 | MIN LPAREN ID RPAREN'''
     p[0] = {'function': p[1], 'column': p[3]}
 
-# --- CONDICIONES (Lógica Jerárquica para Precedencia OR < AND) ---
+# --- CONDICIONES (Lógica Jerárquica para Precedencia OR < AND por jerarquía) ---
 # Nivel más bajo: OR
 def p_condition(p):
     '''condition : condition_term
@@ -145,7 +150,7 @@ def p_factor(p):
 # --- Manejo de errores ---
 def p_error(p):
     global hubo_error
-    hubo_error = True  # ¡MARCAMOS EL ERROR!
+    hubo_error = True  # se marca el error
     if p:
         print(f"*** ERROR DE SINTAXIS *** Línea {p.lineno}: Token inesperado '{p.value}' ({p.type})")
     else:

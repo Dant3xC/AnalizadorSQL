@@ -4,7 +4,6 @@
 import sys
 import os
 from sql_lexer import lexer
-# Importamos también la variable 'hubo_error' para resetearla
 import sql_parser 
 
 def analizar_archivo(ruta_archivo):
@@ -30,17 +29,6 @@ def analizar_archivo(ruta_archivo):
                 print("\n*** ERRORES LÉXICOS DETECTADOS ***")
                 for error in lexer.lex_errors:
                     print(error)
-
-            # 4. Mostrar resultado SOLO si no hubo error
-            # Si hubo error, p_error ya imprimió el mensaje y puso la bandera en True
-            if not sql_parser.hubo_error and resultado_ast:
-                # Opcional: El profesor dijo "El AST no es un árbol".
-                # Puedes comentar este print si quieres ser más conservador,
-                # pero para depurar sirve ver la estructura.
-                # print("\n--- Estructura Interna (AST) ---")
-                # for sentencia in resultado_ast:
-                #     print(sentencia)
-                pass # Si quieres ocultar el diccionario, deja solo el pass
 
             print("\n--- Análisis Finalizado ---\n")
 
