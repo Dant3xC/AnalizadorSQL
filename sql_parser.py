@@ -19,8 +19,8 @@ def p_program(p):
     p[0] = p[1]
 
 def p_statements(p):
-    '''sentencias : sentencia
-                  | sentencias sentencia'''
+    '''statements : sentencia
+                  | statements sentencia'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
@@ -57,7 +57,7 @@ def p_data_type(p):
 # --- SELECT ---
 def p_select_statement(p):
     '''sentencia_select : SELECT lista_seleccion FROM ID
-                        | SELECT lista_seleccion FROM ID  HAVING condicion'''
+                        | SELECT lista_seleccion FROM ID  HAVING condition'''
     if len(p) == 5:
         p[0] = {'type': 'SELECT', 'columns': p[2], 'table': p[4]}
     else:
@@ -65,9 +65,9 @@ def p_select_statement(p):
 
 def p_select_list(p):
     '''lista_seleccion : ID
-                        | llamada_funcion
+                        | function
                         | lista_seleccion COMMA ID
-                        | lista_seleccion COMMA llamada_funcion'''
+                        | lista_seleccion COMMA function'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:

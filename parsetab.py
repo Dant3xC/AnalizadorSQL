@@ -6,7 +6,7 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'AND CHAR COMMA COUNT CREATE DECIMAL DIVIDE EQ FROM GE GT HAVING ID INT LE LPAREN LT MIN MINUS NE NUMBER OR PLUS RPAREN SELECT SEMI STRING SUM TABLE TIMES WHEREprogram : statementsstatements : statement\n                  | statements statementstatement : create_statement SEMI\n                 | select_statement SEMIcreate_statement : CREATE TABLE ID LPAREN column_definitions RPARENcolumn_definitions : column_definition\n                         | column_definitions COMMA column_definitioncolumn_definition : ID data_typedata_type : INT\n                 | CHAR\n                 | DECIMALselect_statement : SELECT select_list FROM ID\n                        | SELECT select_list FROM ID HAVING conditionselect_list : ID\n                   | function\n                   | select_list COMMA ID\n                   | select_list COMMA functionfunction : SUM LPAREN ID RPAREN\n                | COUNT LPAREN ID RPAREN\n                | MIN LPAREN ID RPARENcondition : condition_term\n                 | condition OR condition_termcondition_term : condition_factor\n                      | condition_term AND condition_factorcondition_factor : expression EQ expression\n                        | expression LT expression\n                        | expression LE expression\n                        | expression GT expression\n                        | expression GE expression\n                        | expression NE expressionexpression : term\n                  | expression PLUS term\n                  | expression MINUS termterm : factor\n            | term TIMES factor\n            | term DIVIDE factorfactor : ID\n              | NUMBER\n              | function\n              | LPAREN expression RPAREN'
+_lr_signature = 'AND CHAR COMMA COUNT CREATE DECIMAL DIVIDE EQ FROM GE GT HAVING ID INT LE LPAREN LT MIN MINUS NE NUMBER OR PLUS RPAREN SELECT SEMI STRING SUM TABLE TIMES WHEREprogram : statementsstatements : sentencia\n| statements sentenciasentencia : sentencia_create SEMI\n| sentencia_select SEMIsentencia_create : CREATE TABLE ID LPAREN lista_columnas RPARENlista_columnas : definicion_columna \n| lista_columnas COMMA definicion_columnadefinicion_columna : ID tipo_datotipo_dato : INT\n| CHAR\n| DECIMALsentencia_select : SELECT lista_seleccion FROM ID\n| SELECT lista_seleccion FROM ID  HAVING conditionlista_seleccion : ID\n| function\n| lista_seleccion COMMA ID\n| lista_seleccion COMMA functionfunction : SUM LPAREN ID RPAREN\n| COUNT LPAREN ID RPAREN\n| MIN LPAREN ID RPARENcondition : condition_term\n| condition OR condition_termcondition_term : condition_factor\n| condition_term AND condition_factorcondition_factor : expression EQ expression\n| expression LT expression\n| expression LE expression\n| expression GT expression\n| expression GE expression\n| expression NE expressionexpression : term\n| expression PLUS term\n| expression MINUS termterm : factor\n| term TIMES factor\n| term DIVIDE factorfactor : ID\n| NUMBER\n| function\n| LPAREN expression RPAREN'
     
 _lr_action_items = {'CREATE':([0,2,3,8,9,10,],[6,6,-2,-3,-4,-5,]),'SELECT':([0,2,3,8,9,10,],[7,7,-2,-3,-4,-5,]),'$end':([1,2,3,8,9,10,],[0,-1,-2,-3,-4,-5,]),'SEMI':([4,5,25,35,36,37,42,44,45,46,47,49,50,51,52,68,69,70,71,72,73,74,75,76,77,78,79,80,],[9,10,-13,-19,-20,-21,-6,-38,-14,-22,-24,-32,-35,-39,-40,-23,-25,-26,-27,-28,-29,-30,-31,-33,-34,-36,-37,-41,]),'TABLE':([6,],[11,]),'ID':([7,11,19,20,21,22,23,24,34,43,53,55,56,57,58,59,60,61,62,63,64,65,66,],[13,18,25,26,28,29,30,31,44,31,44,44,44,44,44,44,44,44,44,44,44,44,44,]),'SUM':([7,20,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,]),'COUNT':([7,20,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,]),'MIN':([7,20,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,]),'FROM':([12,13,14,26,27,35,36,37,],[19,-15,-16,-17,-18,-19,-20,-21,]),'COMMA':([12,13,14,26,27,32,33,35,36,37,38,39,40,41,54,],[20,-15,-16,-17,-18,43,-7,-19,-20,-21,-9,-10,-11,-12,-8,]),'LPAREN':([15,16,17,18,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[21,22,23,24,53,53,53,53,53,53,53,53,53,53,53,53,53,53,]),'HAVING':([25,],[34,]),'RPAREN':([28,29,30,32,33,35,36,37,38,39,40,41,44,49,50,51,52,54,67,76,77,78,79,80,],[35,36,37,42,-7,-19,-20,-21,-9,-10,-11,-12,-38,-32,-35,-39,-40,-8,80,-33,-34,-36,-37,-41,]),'INT':([31,],[39,]),'CHAR':([31,],[40,]),'DECIMAL':([31,],[41,]),'NUMBER':([34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[51,51,51,51,51,51,51,51,51,51,51,51,51,51,]),'TIMES':([35,36,37,44,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,65,-35,-39,-40,65,65,-36,-37,-41,]),'DIVIDE':([35,36,37,44,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,66,-35,-39,-40,66,66,-36,-37,-41,]),'EQ':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,57,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'LT':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,58,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'LE':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,59,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'GT':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,60,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'GE':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,61,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'NE':([35,36,37,44,48,49,50,51,52,76,77,78,79,80,],[-19,-20,-21,-38,62,-32,-35,-39,-40,-33,-34,-36,-37,-41,]),'PLUS':([35,36,37,44,48,49,50,51,52,67,70,71,72,73,74,75,76,77,78,79,80,],[-19,-20,-21,-38,63,-32,-35,-39,-40,63,63,63,63,63,63,63,-33,-34,-36,-37,-41,]),'MINUS':([35,36,37,44,48,49,50,51,52,67,70,71,72,73,74,75,76,77,78,79,80,],[-19,-20,-21,-38,64,-32,-35,-39,-40,64,64,64,64,64,64,64,-33,-34,-36,-37,-41,]),'AND':([35,36,37,44,46,47,49,50,51,52,68,69,70,71,72,73,74,75,76,77,78,79,80,],[-19,-20,-21,-38,56,-24,-32,-35,-39,-40,56,-25,-26,-27,-28,-29,-30,-31,-33,-34,-36,-37,-41,]),'OR':([35,36,37,44,45,46,47,49,50,51,52,68,69,70,71,72,73,74,75,76,77,78,79,80,],[-19,-20,-21,-38,55,-22,-24,-32,-35,-39,-40,-23,-25,-26,-27,-28,-29,-30,-31,-33,-34,-36,-37,-41,]),}
 
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'statement':([0,2,],[3,8,]),'create_statement':([0,2,],[4,4,]),'select_statement':([0,2,],[5,5,]),'select_list':([7,],[12,]),'function':([7,20,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[14,27,52,52,52,52,52,52,52,52,52,52,52,52,52,52,]),'column_definitions':([24,],[32,]),'column_definition':([24,43,],[33,54,]),'data_type':([31,],[38,]),'condition':([34,],[45,]),'condition_term':([34,55,],[46,68,]),'condition_factor':([34,55,56,],[47,47,69,]),'expression':([34,53,55,56,57,58,59,60,61,62,],[48,67,48,48,70,71,72,73,74,75,]),'term':([34,53,55,56,57,58,59,60,61,62,63,64,],[49,49,49,49,49,49,49,49,49,49,76,77,]),'factor':([34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[50,50,50,50,50,50,50,50,50,50,50,50,78,79,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statements':([0,],[2,]),'sentencia':([0,2,],[3,8,]),'sentencia_create':([0,2,],[4,4,]),'sentencia_select':([0,2,],[5,5,]),'lista_seleccion':([7,],[12,]),'function':([7,20,34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[14,27,52,52,52,52,52,52,52,52,52,52,52,52,52,52,]),'lista_columnas':([24,],[32,]),'definicion_columna':([24,43,],[33,54,]),'tipo_dato':([31,],[38,]),'condition':([34,],[45,]),'condition_term':([34,55,],[46,68,]),'condition_factor':([34,55,56,],[47,47,69,]),'expression':([34,53,55,56,57,58,59,60,61,62,],[48,67,48,48,70,71,72,73,74,75,]),'term':([34,53,55,56,57,58,59,60,61,62,63,64,],[49,49,49,49,49,49,49,49,49,49,76,77,]),'factor':([34,53,55,56,57,58,59,60,61,62,63,64,65,66,],[50,50,50,50,50,50,50,50,50,50,50,50,78,79,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,45 +27,45 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> statements','program',1,'p_program','sql_parser.py',16),
-  ('statements -> statement','statements',1,'p_statements','sql_parser.py',24),
-  ('statements -> statements statement','statements',2,'p_statements','sql_parser.py',25),
-  ('statement -> create_statement SEMI','statement',2,'p_statement','sql_parser.py',32),
-  ('statement -> select_statement SEMI','statement',2,'p_statement','sql_parser.py',33),
-  ('create_statement -> CREATE TABLE ID LPAREN column_definitions RPAREN','create_statement',6,'p_create_statement','sql_parser.py',38),
-  ('column_definitions -> column_definition','column_definitions',1,'p_column_definitions','sql_parser.py',42),
-  ('column_definitions -> column_definitions COMMA column_definition','column_definitions',3,'p_column_definitions','sql_parser.py',43),
-  ('column_definition -> ID data_type','column_definition',2,'p_column_definition','sql_parser.py',50),
-  ('data_type -> INT','data_type',1,'p_data_type','sql_parser.py',54),
-  ('data_type -> CHAR','data_type',1,'p_data_type','sql_parser.py',55),
-  ('data_type -> DECIMAL','data_type',1,'p_data_type','sql_parser.py',56),
-  ('select_statement -> SELECT select_list FROM ID','select_statement',4,'p_select_statement','sql_parser.py',61),
-  ('select_statement -> SELECT select_list FROM ID HAVING condition','select_statement',6,'p_select_statement','sql_parser.py',62),
-  ('select_list -> ID','select_list',1,'p_select_list','sql_parser.py',69),
-  ('select_list -> function','select_list',1,'p_select_list','sql_parser.py',70),
-  ('select_list -> select_list COMMA ID','select_list',3,'p_select_list','sql_parser.py',71),
-  ('select_list -> select_list COMMA function','select_list',3,'p_select_list','sql_parser.py',72),
-  ('function -> SUM LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',79),
-  ('function -> COUNT LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',80),
-  ('function -> MIN LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',81),
-  ('condition -> condition_term','condition',1,'p_condition','sql_parser.py',87),
-  ('condition -> condition OR condition_term','condition',3,'p_condition','sql_parser.py',88),
-  ('condition_term -> condition_factor','condition_term',1,'p_condition_term','sql_parser.py',96),
-  ('condition_term -> condition_term AND condition_factor','condition_term',3,'p_condition_term','sql_parser.py',97),
-  ('condition_factor -> expression EQ expression','condition_factor',3,'p_condition_factor','sql_parser.py',105),
-  ('condition_factor -> expression LT expression','condition_factor',3,'p_condition_factor','sql_parser.py',106),
-  ('condition_factor -> expression LE expression','condition_factor',3,'p_condition_factor','sql_parser.py',107),
-  ('condition_factor -> expression GT expression','condition_factor',3,'p_condition_factor','sql_parser.py',108),
-  ('condition_factor -> expression GE expression','condition_factor',3,'p_condition_factor','sql_parser.py',109),
-  ('condition_factor -> expression NE expression','condition_factor',3,'p_condition_factor','sql_parser.py',110),
-  ('expression -> term','expression',1,'p_expression','sql_parser.py',117),
-  ('expression -> expression PLUS term','expression',3,'p_expression','sql_parser.py',118),
-  ('expression -> expression MINUS term','expression',3,'p_expression','sql_parser.py',119),
-  ('term -> factor','term',1,'p_term','sql_parser.py',127),
-  ('term -> term TIMES factor','term',3,'p_term','sql_parser.py',128),
-  ('term -> term DIVIDE factor','term',3,'p_term','sql_parser.py',129),
-  ('factor -> ID','factor',1,'p_factor','sql_parser.py',137),
-  ('factor -> NUMBER','factor',1,'p_factor','sql_parser.py',138),
-  ('factor -> function','factor',1,'p_factor','sql_parser.py',139),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor','sql_parser.py',140),
+  ('program -> statements','program',1,'p_program','sql_parser.py',14),
+  ('statements -> sentencia','statements',1,'p_statements','sql_parser.py',22),
+  ('statements -> statements sentencia','statements',2,'p_statements','sql_parser.py',23),
+  ('sentencia -> sentencia_create SEMI','sentencia',2,'p_statement','sql_parser.py',30),
+  ('sentencia -> sentencia_select SEMI','sentencia',2,'p_statement','sql_parser.py',31),
+  ('sentencia_create -> CREATE TABLE ID LPAREN lista_columnas RPAREN','sentencia_create',6,'p_create_statement','sql_parser.py',36),
+  ('lista_columnas -> definicion_columna','lista_columnas',1,'p_column_definitions','sql_parser.py',40),
+  ('lista_columnas -> lista_columnas COMMA definicion_columna','lista_columnas',3,'p_column_definitions','sql_parser.py',41),
+  ('definicion_columna -> ID tipo_dato','definicion_columna',2,'p_column_definition','sql_parser.py',48),
+  ('tipo_dato -> INT','tipo_dato',1,'p_data_type','sql_parser.py',52),
+  ('tipo_dato -> CHAR','tipo_dato',1,'p_data_type','sql_parser.py',53),
+  ('tipo_dato -> DECIMAL','tipo_dato',1,'p_data_type','sql_parser.py',54),
+  ('sentencia_select -> SELECT lista_seleccion FROM ID','sentencia_select',4,'p_select_statement','sql_parser.py',59),
+  ('sentencia_select -> SELECT lista_seleccion FROM ID HAVING condition','sentencia_select',6,'p_select_statement','sql_parser.py',60),
+  ('lista_seleccion -> ID','lista_seleccion',1,'p_select_list','sql_parser.py',67),
+  ('lista_seleccion -> function','lista_seleccion',1,'p_select_list','sql_parser.py',68),
+  ('lista_seleccion -> lista_seleccion COMMA ID','lista_seleccion',3,'p_select_list','sql_parser.py',69),
+  ('lista_seleccion -> lista_seleccion COMMA function','lista_seleccion',3,'p_select_list','sql_parser.py',70),
+  ('function -> SUM LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',77),
+  ('function -> COUNT LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',78),
+  ('function -> MIN LPAREN ID RPAREN','function',4,'p_function','sql_parser.py',79),
+  ('condition -> condition_term','condition',1,'p_condition','sql_parser.py',85),
+  ('condition -> condition OR condition_term','condition',3,'p_condition','sql_parser.py',86),
+  ('condition_term -> condition_factor','condition_term',1,'p_condition_term','sql_parser.py',94),
+  ('condition_term -> condition_term AND condition_factor','condition_term',3,'p_condition_term','sql_parser.py',95),
+  ('condition_factor -> expression EQ expression','condition_factor',3,'p_condition_factor','sql_parser.py',103),
+  ('condition_factor -> expression LT expression','condition_factor',3,'p_condition_factor','sql_parser.py',104),
+  ('condition_factor -> expression LE expression','condition_factor',3,'p_condition_factor','sql_parser.py',105),
+  ('condition_factor -> expression GT expression','condition_factor',3,'p_condition_factor','sql_parser.py',106),
+  ('condition_factor -> expression GE expression','condition_factor',3,'p_condition_factor','sql_parser.py',107),
+  ('condition_factor -> expression NE expression','condition_factor',3,'p_condition_factor','sql_parser.py',108),
+  ('expression -> term','expression',1,'p_expression','sql_parser.py',115),
+  ('expression -> expression PLUS term','expression',3,'p_expression','sql_parser.py',116),
+  ('expression -> expression MINUS term','expression',3,'p_expression','sql_parser.py',117),
+  ('term -> factor','term',1,'p_term','sql_parser.py',125),
+  ('term -> term TIMES factor','term',3,'p_term','sql_parser.py',126),
+  ('term -> term DIVIDE factor','term',3,'p_term','sql_parser.py',127),
+  ('factor -> ID','factor',1,'p_factor','sql_parser.py',135),
+  ('factor -> NUMBER','factor',1,'p_factor','sql_parser.py',136),
+  ('factor -> function','factor',1,'p_factor','sql_parser.py',137),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor','sql_parser.py',138),
 ]

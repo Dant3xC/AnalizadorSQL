@@ -15,6 +15,8 @@ def analizar_archivo(ruta_archivo):
 
             # 1. Resetear lexer
             lexer.lineno = 1
+            lexer.lex_errors = []
+            lexer.lex_error = False
             
             # 2. Resetear bandera de error del parser
             sql_parser.hubo_error = False 
@@ -22,6 +24,12 @@ def analizar_archivo(ruta_archivo):
             # 3. Ejecutar Parser directamente
             # (El parser pedirá los tokens al lexer internamente)
             resultado_ast = sql_parser.parser.parse(data, lexer=lexer)
+
+            # Verificar errores léxicos
+            if getattr(lexer, 'lex_error', False):
+                print("\n*** ERRORES LÉXICOS DETECTADOS ***")
+                for error in lexer.lex_errors:
+                    print(error)
 
             # 4. Mostrar resultado SOLO si no hubo error
             # Si hubo error, p_error ya imprimió el mensaje y puso la bandera en True
