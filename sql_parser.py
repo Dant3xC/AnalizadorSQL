@@ -19,7 +19,7 @@ def p_program(p):
     '''program : statements'''
     global hubo_error
     
-    # Verificamos errores sintácticos (hubo_error) Y TAMBIÉN léxicos
+    # Verificar errores sintácticos (hubo_error) Y TAMBIÉN léxicos
     errores_lexicos = getattr(lexer, 'lex_error', False)
     
     if not hubo_error and not errores_lexicos:
