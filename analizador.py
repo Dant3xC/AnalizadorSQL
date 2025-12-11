@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------
-# PROGRAMA PRINCIPAL: ANALIZADOR SQL
-# ------------------------------------------------------------
-# Lee un archivo .sql, realiza el análisis léxico y sintáctico
-# e imprime el árbol de sintaxis abstracta (AST).
-# ------------------------------------------------------------
+# analizador.py
+
 import sys
 import os
 from sql_lexer import lexer
-from sql_parser import parser
+import sql_parser 
 
 def analizar_archivo(ruta_archivo):
     try:
@@ -16,38 +12,20 @@ def analizar_archivo(ruta_archivo):
             data = archivo.read()
             print(f"\n--- Iniciando análisis de: {ruta_archivo} ---\n")
 
-            # --- RESET del lexer antes de usarlo ---
+            # 1. Resetear lexer y estados
             lexer.lineno = 1
-            lexer.lex_errors = []
-            lexer.lex_error = False
+            lexer.lex_error = False  # Reinicia la bandera de error léxico
+            sql_parser.hubo_error = False 
 
-            # --- PRE-ESCANEO LÉXICO: detecta errores léxicos ANTES de parsear ---
-            lexer.input(data)
-            for _ in lexer:
-                # iterar consume tokens y ejecuta t_error si corresponde
-                pass
-
-            if getattr(lexer, 'lex_error', False):
-                print("Se detectaron errores léxicos. No se ejecutará el análisis sintáctico.")
-                for e in lexer.lex_errors:
-                    print(e)
-                print("\n--- Análisis finalizado (con errores léxicos) ---\n")
-                return
-
-            # --- Si no hay errores léxicos, ejecutar el parser ---
-            resultado_ast = parser.parse(data, lexer=lexer)
-
-            if resultado_ast:
-                print("\n--- Árbol Sintáctico Abstracto (AST) ---")
-                for sentencia in resultado_ast:
-                    print(sentencia)
+            # 2. Ejecutar Parser directamente 
+            resultado_ast = sql_parser.parser.parse(data, lexer=lexer)
 
             print("\n--- Análisis Finalizado ---\n")
 
     except FileNotFoundError:
-        print(f"ERROR: No se pudo encontrar el archivo '{ruta_archivo}'.")
+        print(f"Error: No se pudo encontrar el archivo '{ruta_archivo}'.")
     except Exception as e:
-        print(f"ERROR INESPERADO: {e}")
+        print(f"Error inesperado: {e}")
 
 def mostrar_menu():
     carpeta_casos = 'casos_prueba'
@@ -83,7 +61,6 @@ def mostrar_menu():
                 print("Opción inválida.")
         except ValueError:
             print("Por favor, ingrese un número válido.")
-
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

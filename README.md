@@ -1,11 +1,11 @@
 #  SQL Parser - Proyecto Integrador 
 
-¡Bienvenido al repositorio del Analizador Léxico y Sintáctico para un subconjunto de SQL! Este proyecto fue desarrollado como parte del curso de Compiladores y muestra cómo utilizar herramientas como `PLY` para construir un analizador robusto y funcional.
+Bienvenido al repositorio del Analizador Léxico y Sintáctico para un subconjunto de SQL Este proyecto fue desarrollado como parte del curso de Compiladores y muestra cómo utilizar herramientas como `PLY` para construir un analizador robusto y funcional.
 
 
 ## Descripción General
 
-Este proyecto consiste en un analizador léxico y sintáctico para un lenguaje SQL simplificado. El analizador es capaz de procesar sentencias `CREATE TABLE` y `SELECT ... HAVING`, validando la estructura léxica y sintáctica del código de entrada. Al finalizar, genera un Árbol Sintáctico Abstracto (AST) que representa la estructura jerárquica del código analizado.
+Este proyecto consiste en un analizador léxico y sintáctico para un lenguaje SQL simplificado. El analizador es capaz de procesar sentencias `CREATE TABLE` y `SELECT ... HAVING`, validando la estructura léxica y sintáctica del código de entrada. Al finalizar el analisis se muestra un mensaje indicando si el programa es válido o no.
 
 El objetivo principal es demostrar los conceptos clave del proceso de compilación, incluyendo:
 - Análisis Léxico: Reconocimiento de "palabras" o `tokens`.
@@ -41,51 +41,41 @@ python analizador.py
 
 Dentro de la carpeta `casos_prueba/` encontrarás tres archivos para demostrar el comportamiento del analizador.
 
-### 1. Caso Exitoso (`prueba_ok.sql`)
+### 1. Caso Exitoso (`prueba_ok.txt`)
 
-Al analizar un archivo con sintaxis correcta, el programa imprimirá el Árbol Sintáctico Abstracto (AST) resultante.
-
+Al analizar un archivo con sintaxis correcta, el programa indicará que el programa es válido.
 
 Salida Esperada:
 ```
---- Iniciando análisis de: casos_prueba/prueba_ok.sql ---
+--- Iniciando análisis de: casos_prueba/prueba_ok.txt ---
 
-Detectada sentencia CREATE TABLE para: alumnos
-Detectada sentencia SELECT para la tabla: alumnos
 -> Análisis sintáctico finalizado: Programa válido.
-
---- Árbol Sintáctico Abstracto (AST) ---
-{'type': 'CREATE_TABLE', 'table': 'alumnos', 'columns': [{'column': 'id', 'type': 'INT'}, {'column': 'nombre', 'type': 'CHAR'}, {'column': 'promedio', 'type': 'DECIMAL'}]}
-{'type': 'SELECT_HAVING', 'columns': ['id', {'function': 'SUM', 'column': 'promedio'}], 'table': 'alumnos', 'condition': {'op': '>', 'left': {'function': 'SUM', 'column': 'promedio'}, 'right': '6'}}
 
 --- Análisis Finalizado ---
 ```
 
-### 2. Error Léxico (`prueba_error_lexico.sql`)
+### 2. Error Léxico (`prueba_error_lexico.txt`)
 
-Este archivo contiene un carácter inválido (`@`). El analizador léxico lo detectará y detendrá el proceso antes de llegar al análisis sintáctico.
-
+Este archivo contiene un error léxico, ya que el simbolo @ no es un simbolo valido en SQL.
 
 Salida Esperada:
 ```
---- Iniciando análisis de: casos_prueba/prueba_error_lexico.sql ---
+--- Iniciando análisis de: casos_prueba/prueba_error_lexico.txt ---
 
-Se detectaron errores léxicos. No se ejecutará el análisis sintáctico.
 Error léxico en línea 2: carácter inesperado '@'
 
---- Análisis finalizado (con errores léxicos) ---
+--- Análisis Finalizado ---
 ```
 
-### 3. Error Sintáctico (`prueba_error_sintaxis.sql`)
+### 3. Error Sintáctico (`prueba_error_sintaxis.txt`)
 
-Este archivo tiene una sintaxis incorrecta (falta un paréntesis). El analizador léxico no encontrará problemas, pero el analizador sintáctico fallará y reportará el error.
-
+Este archivo tiene una sintaxis incorrecta (falta un paréntesis). El analizador sintáctico fallará y reportará el error.
 
 Salida Esperada:
 ```
---- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.sql ---
+--- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.txt ---
 
-ERROR DE SINTAXIS: Línea 2: Token inesperado ';' (SEMI)
+Error de sintaxis en línea 2: Token inesperado ';' (SEMI)
 
 --- Análisis Finalizado ---
 ```

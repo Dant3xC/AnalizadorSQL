@@ -1,2 +1,2 @@
-/* Error léxico: símbolo inesperado “@” */
-CREATE TABLE @lumnos (id INT, nombre CHAR);
+/* Error lexico: simbolo invalido arroba */
+CREATE TABLE @lumnos (id INT);
