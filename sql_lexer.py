@@ -11,7 +11,6 @@ import ply.lex as lex
 reserved = {
     'select': 'SELECT',
     'from': 'FROM',
-    'where': 'WHERE',
     'having': 'HAVING',
     'create': 'CREATE',
     'table': 'TABLE',
@@ -72,19 +71,9 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    """
-    Registra el error léxico en lexer.lex_errors y marca lexer.lex_error = True.
-    Luego avanza 1 carácter para continuar el escaneo,
-    pero ahora el flujo que llama al lexer puede decidir no parsear si hay errores.
-    """
-    # inicializar si es la primera vez
-    if not hasattr(t.lexer, 'lex_errors'):
-        t.lexer.lex_errors = []
-    t.lexer.lex_error = True
-    mensaje = f"Error léxico en línea {t.lineno}: carácter inesperado '{t.value[0]}'"
-    t.lexer.lex_errors.append(mensaje)
-    # saltar 1 carácter para continuar el lexing
-    t.lexer.skip(1)
+    # Imprimir error y detener inmediatamente
+    print(f"Error léxico en línea {t.lineno}: carácter inesperado '{t.value[0]}'")
+    raise Exception("LexicalError")
 
 # Construcción del lexer
 lexer = lex.lex()

@@ -3,7 +3,6 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     STRING
-    WHERE
 
 Grammar
 
@@ -82,7 +81,6 @@ STRING               :
 SUM                  : 19
 TABLE                : 6
 TIMES                : 36
-WHERE                : 
 error                : 
 
 Nonterminals, with rules where they appear

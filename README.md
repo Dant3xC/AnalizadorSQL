@@ -1,11 +1,11 @@
 #  SQL Parser - Proyecto Integrador 
 
-¡Bienvenido al repositorio del Analizador Léxico y Sintáctico para un subconjunto de SQL! Este proyecto fue desarrollado como parte del curso de Compiladores y muestra cómo utilizar herramientas como `PLY` para construir un analizador robusto y funcional.
+Bienvenido al repositorio del Analizador Léxico y Sintáctico para un subconjunto de SQL Este proyecto fue desarrollado como parte del curso de Compiladores y muestra cómo utilizar herramientas como `PLY` para construir un analizador robusto y funcional.
 
 
 ## Descripción General
 
-Este proyecto consiste en un analizador léxico y sintáctico para un lenguaje SQL simplificado. El analizador es capaz de procesar sentencias `CREATE TABLE` y `SELECT ... HAVING`, validando la estructura léxica y sintáctica del código de entrada. Al finalizar, genera un Árbol Sintáctico Abstracto (AST) que representa la estructura jerárquica del código analizado.
+Este proyecto consiste en un analizador léxico y sintáctico para un lenguaje SQL simplificado. El analizador es capaz de procesar sentencias `CREATE TABLE` y `SELECT ... HAVING`, validando la estructura léxica y sintáctica del código de entrada. Al finalizar el analisis se muestra un mensaje indicando si el programa es válido o no.
 
 El objetivo principal es demostrar los conceptos clave del proceso de compilación, incluyendo:
 - Análisis Léxico: Reconocimiento de "palabras" o `tokens`.
@@ -56,13 +56,13 @@ Salida Esperada:
 
 ### 2. Error Léxico (`prueba_error_lexico.txt`)
 
-Este archivo intenta utilizar la cláusula `WHERE`, la cual está definida en el léxico pero no en la gramática (que usa `HAVING`). Por lo tanto, genera un error de sintaxis al encontrar el token `WHERE`.
+Este archivo contiene un error léxico, ya que el simbolo @ no es un simbolo valido en SQL.
 
 Salida Esperada:
 ```
 --- Iniciando análisis de: casos_prueba/prueba_error_lexico.txt ---
 
-*** ERROR DE SINTAXIS *** Línea 3: Token inesperado 'WHERE' (WHERE)
+Error léxico en línea 2: carácter inesperado '@'
 
 --- Análisis Finalizado ---
 ```
@@ -75,7 +75,7 @@ Salida Esperada:
 ```
 --- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.txt ---
 
-*** ERROR DE SINTAXIS *** Línea 2: Token inesperado ';' (SEMI)
+Error de sintaxis en línea 2: Token inesperado ';' (SEMI)
 
 --- Análisis Finalizado ---
 ```

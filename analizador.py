@@ -12,30 +12,35 @@ def analizar_archivo(ruta_archivo):
             data = archivo.read()
             print(f"\n--- Iniciando análisis de: {ruta_archivo} ---\n")
 
-            # 1. Resetear lexer
+            # 1. Validación Léxica 
+            # Recorremos todos los tokens para asegurar que no haya errores léxicos
+            # antes de iniciar el análisis sintáctico.
+            lexer.input(data)
+            try:
+                for tok in lexer:
+                    pass 
+            except Exception as e:
+                if "LexicalError" in str(e):
+                    print("\n--- Análisis finalizado ---")
+                    return
+                else:
+                    raise e
+
+            # 2. Resetear lexer para el parser
             lexer.lineno = 1
-            lexer.lex_errors = []
-            lexer.lex_error = False
             
-            # 2. Resetear bandera de error del parser
+            # 3. Resetear bandera de error del parser
             sql_parser.hubo_error = False 
 
-            # 3. Ejecutar Parser directamente
-            # (El parser pedirá los tokens al lexer internamente)
+            # 4. Ejecutar Parser
             resultado_ast = sql_parser.parser.parse(data, lexer=lexer)
-
-            # Verificar errores léxicos
-            if getattr(lexer, 'lex_error', False):
-                print("\n*** ERRORES LÉXICOS DETECTADOS ***")
-                for error in lexer.lex_errors:
-                    print(error)
 
             print("\n--- Análisis Finalizado ---\n")
 
     except FileNotFoundError:
-        print(f"*** ERROR ***: No se pudo encontrar el archivo '{ruta_archivo}'.")
+        print(f"Error: No se pudo encontrar el archivo '{ruta_archivo}'.")
     except Exception as e:
-        print(f"*** ERROR INESPERADO ***: {e}")
+        print(f"Error inesperado: {e}")
 
 def mostrar_menu():
     carpeta_casos = 'casos_prueba'
