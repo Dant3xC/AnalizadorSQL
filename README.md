@@ -41,51 +41,41 @@ python analizador.py
 
 Dentro de la carpeta `casos_prueba/` encontrarás tres archivos para demostrar el comportamiento del analizador.
 
-### 1. Caso Exitoso (`prueba_ok.sql`)
+### 1. Caso Exitoso (`prueba_ok.txt`)
 
-Al analizar un archivo con sintaxis correcta, el programa imprimirá el Árbol Sintáctico Abstracto (AST) resultante.
-
+Al analizar un archivo con sintaxis correcta, el programa indicará que el programa es válido.
 
 Salida Esperada:
 ```
---- Iniciando análisis de: casos_prueba/prueba_ok.sql ---
+--- Iniciando análisis de: casos_prueba/prueba_ok.txt ---
 
-Detectada sentencia CREATE TABLE para: alumnos
-Detectada sentencia SELECT para la tabla: alumnos
 -> Análisis sintáctico finalizado: Programa válido.
-
---- Árbol Sintáctico Abstracto (AST) ---
-{'type': 'CREATE_TABLE', 'table': 'alumnos', 'columns': [{'column': 'id', 'type': 'INT'}, {'column': 'nombre', 'type': 'CHAR'}, {'column': 'promedio', 'type': 'DECIMAL'}]}
-{'type': 'SELECT_HAVING', 'columns': ['id', {'function': 'SUM', 'column': 'promedio'}], 'table': 'alumnos', 'condition': {'op': '>', 'left': {'function': 'SUM', 'column': 'promedio'}, 'right': '6'}}
 
 --- Análisis Finalizado ---
 ```
 
-### 2. Error Léxico (`prueba_error_lexico.sql`)
+### 2. Error Léxico (`prueba_error_lexico.txt`)
 
-Este archivo contiene un carácter inválido (`@`). El analizador léxico lo detectará y detendrá el proceso antes de llegar al análisis sintáctico.
-
-
-Salida Esperada:
-```
---- Iniciando análisis de: casos_prueba/prueba_error_lexico.sql ---
-
-Se detectaron errores léxicos. No se ejecutará el análisis sintáctico.
-Error léxico en línea 2: carácter inesperado '@'
-
---- Análisis finalizado (con errores léxicos) ---
-```
-
-### 3. Error Sintáctico (`prueba_error_sintaxis.sql`)
-
-Este archivo tiene una sintaxis incorrecta (falta un paréntesis). El analizador léxico no encontrará problemas, pero el analizador sintáctico fallará y reportará el error.
-
+Este archivo intenta utilizar la cláusula `WHERE`, la cual está definida en el léxico pero no en la gramática (que usa `HAVING`). Por lo tanto, genera un error de sintaxis al encontrar el token `WHERE`.
 
 Salida Esperada:
 ```
---- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.sql ---
+--- Iniciando análisis de: casos_prueba/prueba_error_lexico.txt ---
 
-ERROR DE SINTAXIS: Línea 2: Token inesperado ';' (SEMI)
+*** ERROR DE SINTAXIS *** Línea 3: Token inesperado 'WHERE' (WHERE)
+
+--- Análisis Finalizado ---
+```
+
+### 3. Error Sintáctico (`prueba_error_sintaxis.txt`)
+
+Este archivo tiene una sintaxis incorrecta (falta un paréntesis). El analizador sintáctico fallará y reportará el error.
+
+Salida Esperada:
+```
+--- Iniciando análisis de: casos_prueba/prueba_error_sintaxis.txt ---
+
+*** ERROR DE SINTAXIS *** Línea 2: Token inesperado ';' (SEMI)
 
 --- Análisis Finalizado ---
 ```
