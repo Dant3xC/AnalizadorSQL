@@ -18,9 +18,13 @@ hubo_error = False
 def p_program(p):
     '''program : statements'''
     global hubo_error
-    # Solo imprime "Válido" si no hubo ningún error durante el análisis
-    if not hubo_error:
+    
+    # Verificamos errores sintácticos (hubo_error) Y TAMBIÉN léxicos
+    errores_lexicos = getattr(lexer, 'lex_error', False)
+    
+    if not hubo_error and not errores_lexicos:
         print("-> Análisis sintáctico finalizado: Programa válido.")
+    
     p[0] = p[1]
 
 def p_statements(p):

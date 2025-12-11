@@ -1,2 +1,2 @@
 /* Error lexico: simbolo invalido arroba */
-CREATE TABLE @lumnos@@ (id INT);
+CREATE TABLE @lumnos (id INT);

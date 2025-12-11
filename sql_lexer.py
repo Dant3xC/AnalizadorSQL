@@ -71,9 +71,10 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    # Imprimir error y detener inmediatamente
+    # Imprimir error y marcar bandera
     print(f"Error léxico en línea {t.lineno}: carácter inesperado '{t.value[0]}'")
-    raise Exception("LexicalError")
+    t.lexer.lex_error = True  # Bandera para que el parser sepa que hubo un error léxico
+    t.lexer.skip(1)
 
 # Construcción del lexer
 lexer = lex.lex()
